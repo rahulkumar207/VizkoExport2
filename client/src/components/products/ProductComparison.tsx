@@ -1,7 +1,11 @@
 import { EnhancedProductType } from "@/lib/data";
 import { Button } from "@/components/ui/button";
-import { X, MoveDown, MoveUp } from "lucide-react";
-import { useState } from "react";
+import { X, MoveDown, MoveUp, FileDown, Share2 } from "lucide-react";
+import { useState, useRef } from "react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import html2canvas from "html2canvas";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductComparisonProps {
   compareProducts: EnhancedProductType[];
@@ -15,10 +19,200 @@ export default function ProductComparison({
   onClearAll
 }: ProductComparisonProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const tableRef = useRef<HTMLTableElement>(null);
+  const { toast } = useToast();
 
   if (compareProducts.length === 0) {
     return null;
   }
+
+  // Function to generate PDF from the comparison table
+  const generatePDF = async () => {
+    if (compareProducts.length === 0) {
+      toast({
+        title: "No products to export",
+        description: "Please add products to compare before exporting.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsExporting(true);
+    
+    try {
+      // Force expanded view for capture
+      setIsExpanded(true);
+      
+      // Create a new PDF document
+      const doc = new jsPDF('p', 'mm', 'a4');
+      
+      // Add title
+      doc.setFontSize(18);
+      doc.setTextColor(0, 35, 102); // Primary color in RGB
+      doc.text("VIZKO Mattress Comparison", 14, 15);
+      
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100);
+      doc.text("Premium Export Mattresses - Product Comparison", 14, 22);
+      
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+      
+      // Add company logo area
+      doc.setFillColor(245, 245, 220); // Beige color
+      doc.rect(14, 25, 180, 10, 'F');
+      doc.setTextColor(0, 35, 102);
+      doc.setFontSize(14);
+      doc.text("VIZKO GLOBAL EXPORTS", 105, 31, { align: 'center' });
+      
+      // Prepare comparison data for the table
+      const tableData = [];
+      
+      // Add header with product info
+      const header = ['Feature'];
+      compareProducts.forEach(product => {
+        header.push(product.title.split("\n\n")[0]);
+      });
+      
+      // Create rows for different features
+      const categoryRow = ['Category'];
+      const dimensionsRow = ['Dimensions'];
+      const descriptionRow = ['Description'];
+      const layersRow = ['Layers'];
+      const priceRow = ['Price'];
+      
+      compareProducts.forEach(product => {
+        categoryRow.push(product.category.charAt(0).toUpperCase() + product.category.slice(1));
+        dimensionsRow.push(`${product.length}" × ${product.breadth}" × ${product.height}"`);
+        descriptionRow.push(product.description);
+        layersRow.push(product.additionalDescription);
+        priceRow.push(`₹${product.price.toLocaleString()}`);
+      });
+      
+      tableData.push(categoryRow, dimensionsRow, descriptionRow, layersRow, priceRow);
+      
+      // Add the table to the PDF
+      autoTable(doc, {
+        head: [header],
+        body: tableData,
+        startY: 40,
+        theme: 'grid',
+        styles: {
+          fontSize: 10,
+          cellPadding: 3,
+        },
+        headStyles: {
+          fillColor: [0, 35, 102],
+          textColor: [255, 255, 255],
+          fontStyle: 'bold',
+        },
+        alternateRowStyles: {
+          fillColor: [245, 245, 245],
+        },
+        columnStyles: {
+          0: {
+            fontStyle: 'bold',
+            cellWidth: 30,
+          },
+        },
+      });
+      
+      // Add footer
+      const pageCount = doc.getNumberOfPages();
+      const now = new Date();
+      const dateStr = now.toLocaleDateString();
+      
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(100, 100, 100);
+        doc.text(
+          `Generated on ${dateStr} - VIZKO GLOBAL EXPORTS - Premium Export Mattresses`,
+          105,
+          doc.internal.pageSize.height - 10,
+          { align: 'center' }
+        );
+        doc.text(`Page ${i} of ${pageCount}`, 105, doc.internal.pageSize.height - 5, { align: 'center' });
+      }
+      
+      // Save the PDF
+      const pdfName = "VIZKO-Mattress-Comparison.pdf";
+      const pdfBlob = doc.output('blob');
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      
+      // Download PDF
+      const link = document.createElement('a');
+      link.href = pdfUrl;
+      link.download = pdfName;
+      link.click();
+      
+      toast({
+        title: "PDF exported successfully",
+        description: "Your comparison has been exported to PDF",
+      });
+      
+      return {
+        pdfBlob,
+        pdfName
+      };
+      
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "Error exporting PDF",
+        description: "There was a problem generating the PDF file.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // Function to share PDF via WhatsApp
+  const shareOnWhatsApp = async () => {
+    if (compareProducts.length === 0) {
+      toast({
+        title: "No products to share",
+        description: "Please add products to compare before sharing.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    try {
+      // Generate PDF first
+      setIsExporting(true);
+      const pdfResult = await generatePDF();
+      
+      if (!pdfResult) return;
+      
+      // Create message text
+      const productTitles = compareProducts.map(p => p.title.split("\n\n")[0]).join(", ");
+      const message = encodeURIComponent(
+        `Check out this mattress comparison from VIZKO Global Exports! Products compared: ${productTitles}`
+      );
+      
+      // Open WhatsApp
+      const whatsappUrl = `https://wa.me/?text=${message}`;
+      window.open(whatsappUrl, '_blank');
+      
+      toast({
+        title: "PDF ready to share",
+        description: "PDF has been generated for sharing on WhatsApp",
+      });
+      
+    } catch (error) {
+      console.error("Error sharing on WhatsApp:", error);
+      toast({
+        title: "Error sharing",
+        description: "There was a problem sharing the comparison.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div className={`fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 transition-all duration-300 z-50 ${
@@ -32,7 +226,32 @@ export default function ProductComparison({
               Compare Products <span className="text-sm font-normal text-gray-500">({compareProducts.length}/4)</span>
             </h3>
           </div>
+          
           <div className="flex items-center gap-2">
+            {/* Export to PDF button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={generatePDF}
+              disabled={isExporting || compareProducts.length === 0}
+              className="text-primary border-primary hover:bg-primary/10"
+            >
+              <FileDown className="w-4 h-4 mr-1" />
+              Export PDF
+            </Button>
+            
+            {/* Share on WhatsApp button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={shareOnWhatsApp}
+              disabled={isExporting || compareProducts.length === 0}
+              className="text-green-600 border-green-600 hover:bg-green-50"
+            >
+              <Share2 className="w-4 h-4 mr-1" />
+              Share on WhatsApp
+            </Button>
+            
             <Button
               variant="ghost"
               size="sm"
@@ -41,6 +260,7 @@ export default function ProductComparison({
             >
               Clear All
             </Button>
+            
             <Button
               variant="ghost"
               size="sm"
@@ -64,7 +284,7 @@ export default function ProductComparison({
 
         {/* Comparison table */}
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+          <table ref={tableRef} className="w-full border-collapse">
             <thead>
               <tr className="border-b border-gray-200">
                 <th className="text-left p-2 w-40">Feature</th>
