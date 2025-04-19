@@ -21,10 +21,10 @@ export default function ProductTabs({ activeProduct, setActiveProduct }: Product
             key={tab.id}
             variant={activeProduct === tab.id ? "default" : "outline"}
             onClick={() => setActiveProduct(tab.id)}
-            className={`px-6 py-3 rounded-lg font-medium ${
+            className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
               activeProduct === tab.id 
-                ? "bg-primary text-white" 
-                : "bg-white text-primary border border-primary"
+                ? "bg-primary text-white shadow-lg scale-105" 
+                : "bg-white text-primary border border-primary hover:bg-primary/10"
             }`}
           >
             {tab.label}

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -16,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { productData } from "@/lib/data";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -37,16 +39,44 @@ type FormValues = z.infer<typeof formSchema>;
 export default function ContactForm() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [location] = useLocation();
+  const [hasProductDetails, setHasProductDetails] = useState(false);
 
+  // Parse query parameters
+  const getProductInfoFromUrl = () => {
+    const params = new URLSearchParams(location.split("?")[1]);
+    const productId = params.get("product");
+    const length = params.get("length");
+    const breadth = params.get("breadth");
+    const thickness = params.get("thickness");
+    
+    if (productId && length && breadth && thickness && productData[productId]) {
+      const product = productData[productId];
+      return `I'm interested in the ${product.name} Mattress with dimensions ${length}" × ${breadth}" × ${thickness}". Please provide more information about pricing and availability for export.`;
+    }
+    
+    return "";
+  };
+
+  const defaultMessage = getProductInfoFromUrl();
+  
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
       phone: "",
-      message: "",
+      message: defaultMessage,
     },
   });
+  
+  // Update message field when URL params change
+  useEffect(() => {
+    const message = getProductInfoFromUrl();
+    if (message) {
+      form.setValue("message", message);
+    }
+  }, [location, form]);
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
