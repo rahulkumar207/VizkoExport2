@@ -75,6 +75,9 @@ export default function ContactForm() {
     const message = getProductInfoFromUrl();
     if (message) {
       form.setValue("message", message);
+      setHasProductDetails(true);
+    } else {
+      setHasProductDetails(false);
     }
   }, [location, form]);
 
@@ -104,6 +107,21 @@ export default function ContactForm() {
   return (
     <div className="bg-white rounded-lg shadow-lg p-8">
       <h2 className="font-playfair text-2xl font-bold text-primary mb-6">Send Us a Message</h2>
+      
+      {hasProductDetails && (
+        <div className="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-lg flex items-center">
+          <div className="text-primary mr-3 flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </div>
+          <div>
+            <p className="font-medium text-primary">Product details included</p>
+            <p className="text-sm text-gray-700">Your message has been pre-filled with the product details you selected.</p>
+          </div>
+        </div>
+      )}
       
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
