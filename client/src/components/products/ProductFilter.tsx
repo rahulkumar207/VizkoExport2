@@ -6,7 +6,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { EnhancedProductType } from "@/lib/data";
 import { Separator } from "@/components/ui/separator";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ProductFilterProps {
   products: EnhancedProductType[];
@@ -53,6 +60,11 @@ export default function ProductFilter({ products, onFilterChange }: ProductFilte
     priceRange: [minPrice, maxPrice],
   });
   
+  // Dropdown options
+  const lengthOptions = [72, 78];
+  const breadthOptions = [36, 48, 60, 72];
+  const heightOptions = [4, 6, 8];
+  
   // Category filter controls
   const handleCategoryChange = (category: string, checked: boolean) => {
     if (checked) {
@@ -65,6 +77,51 @@ export default function ProductFilter({ products, onFilterChange }: ProductFilte
         ...filters,
         categories: filters.categories.filter(c => c !== category),
       });
+    }
+  };
+  
+  // Length dropdown handlers
+  const handleMinLengthChange = (value: string) => {
+    const numValue = Number(value);
+    if (numValue <= filters.lengthRange[1]) {
+      setFilters({...filters, lengthRange: [numValue, filters.lengthRange[1]]});
+    }
+  };
+  
+  const handleMaxLengthChange = (value: string) => {
+    const numValue = Number(value);
+    if (numValue >= filters.lengthRange[0]) {
+      setFilters({...filters, lengthRange: [filters.lengthRange[0], numValue]});
+    }
+  };
+  
+  // Breadth dropdown handlers
+  const handleMinBreadthChange = (value: string) => {
+    const numValue = Number(value);
+    if (numValue <= filters.breadthRange[1]) {
+      setFilters({...filters, breadthRange: [numValue, filters.breadthRange[1]]});
+    }
+  };
+  
+  const handleMaxBreadthChange = (value: string) => {
+    const numValue = Number(value);
+    if (numValue >= filters.breadthRange[0]) {
+      setFilters({...filters, breadthRange: [filters.breadthRange[0], numValue]});
+    }
+  };
+  
+  // Height dropdown handlers
+  const handleMinHeightChange = (value: string) => {
+    const numValue = Number(value);
+    if (numValue <= filters.heightRange[1]) {
+      setFilters({...filters, heightRange: [numValue, filters.heightRange[1]]});
+    }
+  };
+  
+  const handleMaxHeightChange = (value: string) => {
+    const numValue = Number(value);
+    if (numValue >= filters.heightRange[0]) {
+      setFilters({...filters, heightRange: [filters.heightRange[0], numValue]});
     }
   };
   
@@ -132,7 +189,7 @@ export default function ProductFilter({ products, onFilterChange }: ProductFilte
         
         <Separator className="my-4" />
         
-        {/* Length slider */}
+        {/* Length filter with dropdowns */}
         <div className="mb-4">
           <div className="flex justify-between items-center mb-2">
             <Label className="text-sm font-medium text-gray-700">Length (inches)</Label>
@@ -151,39 +208,43 @@ export default function ProductFilter({ products, onFilterChange }: ProductFilte
           />
           <div className="flex gap-2">
             <div className="w-1/2">
-              <Input 
-                type="number" 
-                min={minLength} 
-                max={filters.lengthRange[1]} 
-                value={filters.lengthRange[0]}
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  if (value >= minLength && value <= filters.lengthRange[1]) {
-                    setFilters({...filters, lengthRange: [value, filters.lengthRange[1]]});
-                  }
-                }}
-                className="h-8 text-xs"
-              />
+              <Select 
+                value={filters.lengthRange[0].toString()} 
+                onValueChange={handleMinLengthChange}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue placeholder="Min Length" />
+                </SelectTrigger>
+                <SelectContent>
+                  {lengthOptions.map(length => (
+                    <SelectItem key={`min-length-${length}`} value={length.toString()}>
+                      {length}"
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="w-1/2">
-              <Input 
-                type="number" 
-                min={filters.lengthRange[0]} 
-                max={maxLength} 
-                value={filters.lengthRange[1]}
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  if (value >= filters.lengthRange[0] && value <= maxLength) {
-                    setFilters({...filters, lengthRange: [filters.lengthRange[0], value]});
-                  }
-                }}
-                className="h-8 text-xs"
-              />
+              <Select 
+                value={filters.lengthRange[1].toString()} 
+                onValueChange={handleMaxLengthChange}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue placeholder="Max Length" />
+                </SelectTrigger>
+                <SelectContent>
+                  {lengthOptions.map(length => (
+                    <SelectItem key={`max-length-${length}`} value={length.toString()}>
+                      {length}"
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
         
-        {/* Breadth slider */}
+        {/* Breadth filter with dropdowns */}
         <div className="mb-4">
           <div className="flex justify-between items-center mb-2">
             <Label className="text-sm font-medium text-gray-700">Breadth (inches)</Label>
@@ -202,39 +263,43 @@ export default function ProductFilter({ products, onFilterChange }: ProductFilte
           />
           <div className="flex gap-2">
             <div className="w-1/2">
-              <Input 
-                type="number" 
-                min={minBreadth} 
-                max={filters.breadthRange[1]} 
-                value={filters.breadthRange[0]}
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  if (value >= minBreadth && value <= filters.breadthRange[1]) {
-                    setFilters({...filters, breadthRange: [value, filters.breadthRange[1]]});
-                  }
-                }}
-                className="h-8 text-xs"
-              />
+              <Select 
+                value={filters.breadthRange[0].toString()} 
+                onValueChange={handleMinBreadthChange}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue placeholder="Min Breadth" />
+                </SelectTrigger>
+                <SelectContent>
+                  {breadthOptions.map(breadth => (
+                    <SelectItem key={`min-breadth-${breadth}`} value={breadth.toString()}>
+                      {breadth}"
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="w-1/2">
-              <Input 
-                type="number" 
-                min={filters.breadthRange[0]} 
-                max={maxBreadth} 
-                value={filters.breadthRange[1]}
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  if (value >= filters.breadthRange[0] && value <= maxBreadth) {
-                    setFilters({...filters, breadthRange: [filters.breadthRange[0], value]});
-                  }
-                }}
-                className="h-8 text-xs"
-              />
+              <Select 
+                value={filters.breadthRange[1].toString()} 
+                onValueChange={handleMaxBreadthChange}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue placeholder="Max Breadth" />
+                </SelectTrigger>
+                <SelectContent>
+                  {breadthOptions.map(breadth => (
+                    <SelectItem key={`max-breadth-${breadth}`} value={breadth.toString()}>
+                      {breadth}"
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
         
-        {/* Height/Thickness slider */}
+        {/* Height/Thickness filter with dropdowns */}
         <div className="mb-4">
           <div className="flex justify-between items-center mb-2">
             <Label className="text-sm font-medium text-gray-700">Thickness (inches)</Label>
@@ -253,34 +318,38 @@ export default function ProductFilter({ products, onFilterChange }: ProductFilte
           />
           <div className="flex gap-2">
             <div className="w-1/2">
-              <Input 
-                type="number" 
-                min={minHeight} 
-                max={filters.heightRange[1]} 
-                value={filters.heightRange[0]}
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  if (value >= minHeight && value <= filters.heightRange[1]) {
-                    setFilters({...filters, heightRange: [value, filters.heightRange[1]]});
-                  }
-                }}
-                className="h-8 text-xs"
-              />
+              <Select 
+                value={filters.heightRange[0].toString()} 
+                onValueChange={handleMinHeightChange}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue placeholder="Min Thickness" />
+                </SelectTrigger>
+                <SelectContent>
+                  {heightOptions.map(height => (
+                    <SelectItem key={`min-height-${height}`} value={height.toString()}>
+                      {height}"
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="w-1/2">
-              <Input 
-                type="number" 
-                min={filters.heightRange[0]} 
-                max={maxHeight} 
-                value={filters.heightRange[1]}
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  if (value >= filters.heightRange[0] && value <= maxHeight) {
-                    setFilters({...filters, heightRange: [filters.heightRange[0], value]});
-                  }
-                }}
-                className="h-8 text-xs"
-              />
+              <Select 
+                value={filters.heightRange[1].toString()} 
+                onValueChange={handleMaxHeightChange}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue placeholder="Max Thickness" />
+                </SelectTrigger>
+                <SelectContent>
+                  {heightOptions.map(height => (
+                    <SelectItem key={`max-height-${height}`} value={height.toString()}>
+                      {height}"
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>

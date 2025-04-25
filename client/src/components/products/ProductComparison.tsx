@@ -215,15 +215,15 @@ export default function ProductComparison({
   };
 
   return (
-    <div className={`fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 transition-all duration-300 z-50 ${
+    <div className={`fixed bottom-0 left-0 right-0 bg-primary shadow-lg border-t border-primary/80 transition-all duration-300 z-50 ${
       isExpanded ? 'max-h-[80vh]' : 'max-h-28'
     }`}>
       <div className="container mx-auto p-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
-            <h3 className="font-semibold text-lg text-primary">
-              Compare Products <span className="text-sm font-normal text-gray-500">({compareProducts.length}/4)</span>
+            <h3 className="font-semibold text-lg text-white">
+              Compare Products <span className="text-sm font-normal text-gray-200">({compareProducts.length}/4)</span>
             </h3>
           </div>
           
@@ -234,7 +234,7 @@ export default function ProductComparison({
               size="sm"
               onClick={generatePDF}
               disabled={isExporting || compareProducts.length === 0}
-              className="text-primary border-primary hover:bg-primary/10"
+              className="text-white border-white hover:bg-white/10"
             >
               <FileDown className="w-4 h-4 mr-1" />
               Export PDF
@@ -246,7 +246,7 @@ export default function ProductComparison({
               size="sm"
               onClick={shareOnWhatsApp}
               disabled={isExporting || compareProducts.length === 0}
-              className="text-green-600 border-green-600 hover:bg-green-50"
+              className="text-white border-white hover:bg-white/10"
             >
               <Share2 className="w-4 h-4 mr-1" />
               Share on WhatsApp
@@ -256,7 +256,7 @@ export default function ProductComparison({
               variant="ghost"
               size="sm"
               onClick={onClearAll}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-gray-200 hover:text-white hover:bg-white/10"
             >
               Clear All
             </Button>
@@ -265,7 +265,7 @@ export default function ProductComparison({
               variant="ghost"
               size="sm"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-primary"
+              className="text-white"
             >
               {isExpanded ? (
                 <>
@@ -284,18 +284,19 @@ export default function ProductComparison({
 
         {/* Comparison table */}
         <div className="overflow-x-auto">
-          <table ref={tableRef} className="w-full border-collapse">
+          <table ref={tableRef} className="w-full border-collapse bg-white rounded-lg overflow-hidden">
             <thead>
               <tr className="border-b border-gray-200">
-                <th className="text-left p-2 w-40">Feature</th>
+                <th className="text-left p-2 w-40 bg-gray-50">Feature</th>
                 {compareProducts.map((product) => (
                   <th key={product.id} className="p-2 min-w-[200px]">
                     <div className="flex flex-col items-center">
-                      <div className="relative w-full">
+                      {/* Product Image with remove button */}
+                      <div className="relative w-full mb-3">
                         <img
                           src={product.image}
                           alt={product.title}
-                          className="w-24 h-24 object-cover mx-auto rounded-md"
+                          className="w-28 h-28 sm:w-32 sm:h-32 object-cover mx-auto rounded-md shadow-sm"
                         />
                         <Button
                           variant="outline"
@@ -306,8 +307,13 @@ export default function ProductComparison({
                           <X className="h-3 w-3" />
                         </Button>
                       </div>
-                      <h4 className="text-sm font-medium mt-2 line-clamp-1">{product.title.split("\n\n")[0]}</h4>
-                      <p className="text-primary font-bold">₹{product.price.toLocaleString()}</p>
+                      
+                      {/* Product info below image */}
+                      <div className="w-full text-center px-2">
+                        <h4 className="text-sm font-medium line-clamp-1 mb-1">{product.title.split("\n\n")[0]}</h4>
+                        <p className="text-xs text-gray-600 line-clamp-2 mb-2">{product.description}</p>
+                        <p className="text-primary font-bold">₹{product.price.toLocaleString()}</p>
+                      </div>
                     </div>
                   </th>
                 ))}
@@ -315,7 +321,7 @@ export default function ProductComparison({
                 {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
                   <th key={`empty-${i}`} className="p-2 min-w-[200px]">
                     <div className="flex flex-col items-center">
-                      <div className="w-24 h-24 bg-gray-100 rounded-md flex items-center justify-center">
+                      <div className="w-28 h-28 sm:w-32 sm:h-32 bg-gray-100 rounded-md flex items-center justify-center">
                         <span className="text-gray-400 text-sm">Add product</span>
                       </div>
                     </div>
