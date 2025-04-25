@@ -54,7 +54,7 @@ export default function Hero() {
   }, [nextSlide]);
   
   return (
-    <div className="pt-24">
+    <div className="pt-20">
       <div className="relative">
         {/* Carousel Container */}
         <div className="relative h-[500px] md:h-[600px] overflow-hidden">

@@ -24,8 +24,7 @@ export default function Header() {
   const isActive = (path: string) => {
     return location === path;
   };
-  
-  // Social media links
+
   const socialMediaLinks = [
     { icon: Facebook, url: "https://facebook.com", label: "Facebook" },
     { icon: Instagram, url: "https://instagram.com", label: "Instagram" },
@@ -36,45 +35,38 @@ export default function Header() {
   return (
     <header className="bg-white shadow-sm fixed w-full z-50">
       <div className="container mx-auto px-4">
-        <div className="flex items-center py-4">
-          {/* Logo (left section) */}
+        <div className="flex items-center py-6">
+          {/* Logo */}
           <div className="flex-shrink-0 w-1/4">
             <Link href="/" className="flex items-center">
               <span className="text-primary font-playfair font-bold text-3xl">VIZKO</span>
             </Link>
           </div>
-          
-          {/* Desktop navigation (center section) */}
+
+          {/* Desktop Navigation */}
           <div className="hidden md:flex justify-center flex-grow">
             <div className="flex space-x-10">
-              <Link 
-                href="/" 
-                className={`${isActive('/') ? 'text-primary' : 'text-gray-800'} font-medium hover:text-primary transition duration-300`}
-              >
-                Home
-              </Link>
-              <Link 
-                href="/about" 
-                className={`${isActive('/about') ? 'text-primary' : 'text-gray-800'} font-medium hover:text-primary transition duration-300`}
-              >
-                About
-              </Link>
-              <Link 
-                href="/products" 
-                className={`${isActive('/products') ? 'text-primary' : 'text-gray-800'} font-medium hover:text-primary transition duration-300`}
-              >
-                Products
-              </Link>
-              <Link 
-                href="/contact" 
-                className={`${isActive('/contact') ? 'text-primary' : 'text-gray-800'} font-medium hover:text-primary transition duration-300`}
-              >
-                Contact
-              </Link>
+              {[
+                { label: "Home", path: "/" },
+                { label: "About", path: "/about" },
+                { label: "Products", path: "/products" },
+                { label: "Contact", path: "/contact" }
+              ].map((link, index) => (
+                <Link
+                  key={index}
+                  href={link.path}
+                  className={`relative group font-medium py-1 ${
+                    isActive(link.path) ? "text-primary" : "text-gray-800"
+                  }`}
+                >
+                  <span className="relative z-10">{link.label}</span>
+                  <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              ))}
             </div>
           </div>
-          
-          {/* Social icons (right section) */}
+
+          {/* Social Icons */}
           <div className="hidden md:flex items-center justify-end w-1/4 space-x-4">
             {socialMediaLinks.map((social, index) => {
               const IconComponent = social.icon;
@@ -92,8 +84,8 @@ export default function Header() {
               );
             })}
           </div>
-          
-          {/* Mobile menu button */}
+
+          {/* Mobile Menu Button */}
           <div className="md:hidden ml-auto">
             <button 
               onClick={toggleMenu} 
@@ -108,40 +100,30 @@ export default function Header() {
             </button>
           </div>
         </div>
-        
-        {/* Mobile navigation menu */}
+
+        {/* Mobile Navigation Menu */}
         {isMenuOpen && (
           <div className="md:hidden pb-4">
-            <Link 
-              href="/" 
-              className={`block py-2 ${isActive('/') ? 'text-primary' : 'text-gray-800'} font-medium`}
-              onClick={closeMenu}
-            >
-              Home
-            </Link>
-            <Link 
-              href="/about" 
-              className={`block py-2 ${isActive('/about') ? 'text-primary' : 'text-gray-800'} font-medium`}
-              onClick={closeMenu}
-            >
-              About
-            </Link>
-            <Link 
-              href="/products" 
-              className={`block py-2 ${isActive('/products') ? 'text-primary' : 'text-gray-800'} font-medium`}
-              onClick={closeMenu}
-            >
-              Products
-            </Link>
-            <Link 
-              href="/contact" 
-              className={`block py-2 ${isActive('/contact') ? 'text-primary' : 'text-gray-800'} font-medium`}
-              onClick={closeMenu}
-            >
-              Contact
-            </Link>
-            
-            {/* Social media links in mobile menu */}
+            {[
+              { label: "Home", path: "/" },
+              { label: "About", path: "/about" },
+              { label: "Products", path: "/products" },
+              { label: "Contact", path: "/contact" }
+            ].map((link, index) => (
+              <Link
+                key={index}
+                href={link.path}
+                onClick={closeMenu}
+                className={`relative group block py-2 font-medium ${
+                  isActive(link.path) ? "text-primary" : "text-gray-800"
+                }`}
+              >
+                <span className="relative z-10">{link.label}</span>
+                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+            ))}
+
+            {/* Mobile Social Links */}
             <div className="flex mt-4 space-x-4 border-t pt-4">
               {socialMediaLinks.map((social, index) => {
                 const IconComponent = social.icon;

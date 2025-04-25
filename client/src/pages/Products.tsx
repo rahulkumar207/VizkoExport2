@@ -135,10 +135,10 @@ export default function Products() {
     
     setCompareProducts([...compareProducts, product]);
     
-    toast({
-      title: "Product added for comparison",
-      description: `Added ${product.title.split("\n\n")[0]} to comparison.`,
-    });
+    // toast({
+    //   title: "Product added for comparison",
+    //   description: `Added ${product.title.split("\n\n")[0]} to comparison.`,
+    // });
   };
 
   // Remove product from comparison

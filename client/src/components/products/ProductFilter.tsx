@@ -197,7 +197,7 @@ export default function ProductFilter({ products, onFilterChange }: ProductFilte
               {filters.lengthRange[0]} - {filters.lengthRange[1]}"
             </div>
           </div>
-          <Slider 
+          {/* <Slider 
             defaultValue={[minLength, maxLength]} 
             min={minLength} 
             max={maxLength}
@@ -205,7 +205,7 @@ export default function ProductFilter({ products, onFilterChange }: ProductFilte
             value={[filters.lengthRange[0], filters.lengthRange[1]]}
             onValueChange={(value) => setFilters({...filters, lengthRange: [value[0], value[1]]})}
             className="my-4"
-          />
+          /> */}
           <div className="flex gap-2">
             <div className="w-1/2">
               <Select 
@@ -252,7 +252,7 @@ export default function ProductFilter({ products, onFilterChange }: ProductFilte
               {filters.breadthRange[0]} - {filters.breadthRange[1]}"
             </div>
           </div>
-          <Slider 
+          {/* <Slider 
             defaultValue={[minBreadth, maxBreadth]} 
             min={minBreadth} 
             max={maxBreadth}
@@ -260,7 +260,7 @@ export default function ProductFilter({ products, onFilterChange }: ProductFilte
             value={[filters.breadthRange[0], filters.breadthRange[1]]}
             onValueChange={(value) => setFilters({...filters, breadthRange: [value[0], value[1]]})}
             className="my-4"
-          />
+          /> */}
           <div className="flex gap-2">
             <div className="w-1/2">
               <Select 
@@ -307,7 +307,7 @@ export default function ProductFilter({ products, onFilterChange }: ProductFilte
               {filters.heightRange[0]} - {filters.heightRange[1]}"
             </div>
           </div>
-          <Slider 
+          {/* <Slider 
             defaultValue={[minHeight, maxHeight]} 
             min={minHeight} 
             max={maxHeight}
@@ -315,7 +315,7 @@ export default function ProductFilter({ products, onFilterChange }: ProductFilte
             value={[filters.heightRange[0], filters.heightRange[1]]}
             onValueChange={(value) => setFilters({...filters, heightRange: [value[0], value[1]]})}
             className="my-4"
-          />
+          /> */}
           <div className="flex gap-2">
             <div className="w-1/2">
               <Select 

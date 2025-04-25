@@ -1,6 +1,6 @@
 export default function CompanyIntro() {
   return (
-    <div className="pt-24 bg-accent">
+    <div className="pt-20 bg-accent">
       <div className="relative">
         <div className="absolute inset-0 bg-primary opacity-60"></div>
         <div className="relative container mx-auto px-4 py-20 md:py-32 z-10">

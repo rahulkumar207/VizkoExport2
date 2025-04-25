@@ -234,7 +234,7 @@ export default function ProductComparison({
               size="sm"
               onClick={generatePDF}
               disabled={isExporting || compareProducts.length === 0}
-              className="text-white border-white hover:bg-white/10"
+              className="text-back border-white hover:bg-white/10"
             >
               <FileDown className="w-4 h-4 mr-1" />
               Export PDF
@@ -246,7 +246,7 @@ export default function ProductComparison({
               size="sm"
               onClick={shareOnWhatsApp}
               disabled={isExporting || compareProducts.length === 0}
-              className="text-white border-white hover:bg-white/10"
+              className="text-black border-white hover:bg-white/10"
             >
               <Share2 className="w-4 h-4 mr-1" />
               Share on WhatsApp
@@ -283,120 +283,135 @@ export default function ProductComparison({
         </div>
 
         {/* Comparison table */}
-        <div className="overflow-x-auto">
-          <table ref={tableRef} className="w-full border-collapse bg-white rounded-lg overflow-hidden">
-            <thead>
-              <tr className="border-b border-gray-200">
-                <th className="text-left p-2 w-40 bg-gray-50">Feature</th>
-                {compareProducts.map((product) => (
-                  <th key={product.id} className="p-2 min-w-[200px]">
-                    <div className="flex flex-col items-center">
-                      {/* Product Image with remove button */}
-                      <div className="relative w-full mb-3">
-                        <img
-                          src={product.image}
-                          alt={product.title}
-                          className="w-28 h-28 sm:w-32 sm:h-32 object-cover mx-auto rounded-md shadow-sm"
-                        />
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-white border border-gray-200"
-                          onClick={() => onRemoveFromCompare(product.id)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                      
-                      {/* Product info below image */}
-                      <div className="w-full text-center px-2">
-                        <h4 className="text-sm font-medium line-clamp-1 mb-1">{product.title.split("\n\n")[0]}</h4>
-                        <p className="text-xs text-gray-600 line-clamp-2 mb-2">{product.description}</p>
-                        <p className="text-primary font-bold">₹{product.price.toLocaleString()}</p>
-                      </div>
-                    </div>
-                  </th>
-                ))}
-                {/* Empty cells for missing products */}
-                {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
-                  <th key={`empty-${i}`} className="p-2 min-w-[200px]">
-                    <div className="flex flex-col items-center">
-                      <div className="w-28 h-28 sm:w-32 sm:h-32 bg-gray-100 rounded-md flex items-center justify-center">
-                        <span className="text-gray-400 text-sm">Add product</span>
-                      </div>
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className={`${isExpanded ? 'block' : 'hidden'}`}>
-              {/* Category */}
-              <tr className="border-b border-gray-200 bg-gray-50">
-                <td className="p-2 font-medium">Category</td>
-                {compareProducts.map((product) => (
-                  <td key={`cat-${product.id}`} className="p-2 text-center capitalize">
-                    {product.category}
-                  </td>
-                ))}
-                {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
-                  <td key={`empty-cat-${i}`} className="p-2"></td>
-                ))}
-              </tr>
-              
-              {/* Dimensions */}
-              <tr className="border-b border-gray-200">
-                <td className="p-2 font-medium">Dimensions</td>
-                {compareProducts.map((product) => (
-                  <td key={`dim-${product.id}`} className="p-2 text-center">
-                    {product.length}" × {product.breadth}" × {product.height}"
-                  </td>
-                ))}
-                {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
-                  <td key={`empty-dim-${i}`} className="p-2"></td>
-                ))}
-              </tr>
-              
-              {/* Description */}
-              <tr className="border-b border-gray-200 bg-gray-50">
-                <td className="p-2 font-medium">Description</td>
-                {compareProducts.map((product) => (
-                  <td key={`desc-${product.id}`} className="p-2 text-sm">
-                    <p className="line-clamp-4 text-gray-700">{product.description}</p>
-                  </td>
-                ))}
-                {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
-                  <td key={`empty-desc-${i}`} className="p-2"></td>
-                ))}
-              </tr>
-              
-              {/* Layers */}
-              <tr className="border-b border-gray-200">
-                <td className="p-2 font-medium">Layers</td>
-                {compareProducts.map((product) => (
-                  <td key={`layer-${product.id}`} className="p-2 text-sm">
-                    <p className="text-gray-700">{product.additionalDescription}</p>
-                  </td>
-                ))}
-                {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
-                  <td key={`empty-layer-${i}`} className="p-2"></td>
-                ))}
-              </tr>
-              
-              {/* Price */}
-              <tr className="border-b border-gray-200 bg-gray-50">
-                <td className="p-2 font-medium">Price</td>
-                {compareProducts.map((product) => (
-                  <td key={`price-${product.id}`} className="p-2 text-center">
-                    <p className="text-lg font-bold text-primary">₹{product.price.toLocaleString()}</p>
-                  </td>
-                ))}
-                {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
-                  <td key={`empty-price-${i}`} className="p-2"></td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
+       <div className="overflow-x-auto">
+  <table
+    ref={tableRef}
+    className="w-full table-fixed border-collapse bg-white rounded-lg overflow-hidden"
+  >
+    <thead>
+      <tr className="border-b border-gray-200">
+        <th className="text-left p-2 w-[120px] bg-gray-50 whitespace-nowrap">
+          Feature
+        </th>
+        {compareProducts.map((product) => (
+          <th key={product.id} className="p-2 min-w-[200px]">
+            <div className="flex flex-col items-center">
+              {/* Product Image with remove button */}
+              <div className="relative w-full mb-3">
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="w-28 h-28 sm:w-32 sm:h-32 object-cover mx-auto rounded-md shadow-sm"
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-white border border-gray-200"
+                  onClick={() => onRemoveFromCompare(product.id)}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+
+              {/* Product info below image */}
+              <div className="w-full text-center px-2">
+                <h4 className="text-sm font-medium line-clamp-1 mb-1">
+                  {product.title.split("\n\n")[0]}
+                </h4>
+                <p className="text-xs text-gray-600 line-clamp-2 mb-2">
+                  {product.description}
+                </p>
+                <p className="text-primary font-bold">
+                  ₹{product.price.toLocaleString()}
+                </p>
+              </div>
+            </div>
+          </th>
+        ))}
+        {/* Empty cells for missing products */}
+        {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
+          <th key={`empty-${i}`} className="p-2 min-w-[200px]">
+            <div className="flex flex-col items-center">
+              <div className="w-28 h-28 sm:w-32 sm:h-32 bg-gray-100 rounded-md flex items-center justify-center">
+                <span className="text-gray-400 text-sm">Add product</span>
+              </div>
+            </div>
+          </th>
+        ))}
+      </tr>
+    </thead>
+
+    <tbody className={`${isExpanded ? "block" : "hidden"}`}>
+      {/* Category */}
+      <tr className="border-b border-gray-200 bg-gray-50">
+        <td className="p-2 font-medium">Category</td>
+        {compareProducts.map((product) => (
+          <td key={`cat-${product.id}`} className="p-2 text-center capitalize">
+            {product.category}
+          </td>
+        ))}
+        {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
+          <td key={`empty-cat-${i}`} className="p-2"></td>
+        ))}
+      </tr>
+
+      {/* Dimensions */}
+      <tr className="border-b border-gray-200">
+        <td className="p-2 font-medium">Dimensions</td>
+        {compareProducts.map((product) => (
+          <td key={`dim-${product.id}`} className="p-2 text-center">
+            {product.length}" × {product.breadth}" × {product.height}"
+          </td>
+        ))}
+        {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
+          <td key={`empty-dim-${i}`} className="p-2"></td>
+        ))}
+      </tr>
+
+      {/* Description */}
+      <tr className="border-b border-gray-200 bg-gray-50">
+        <td className="p-2 font-medium">Description</td>
+        {compareProducts.map((product) => (
+          <td key={`desc-${product.id}`} className="p-2 text-sm">
+            <p className="line-clamp-4 text-gray-700">{product.description}</p>
+          </td>
+        ))}
+        {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
+          <td key={`empty-desc-${i}`} className="p-2"></td>
+        ))}
+      </tr>
+
+      {/* Layers */}
+      <tr className="border-b border-gray-200">
+        <td className="p-2 font-medium">Layers</td>
+        {compareProducts.map((product) => (
+          <td key={`layer-${product.id}`} className="p-2 text-sm">
+            <p className="text-gray-700">{product.additionalDescription}</p>
+          </td>
+        ))}
+        {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
+          <td key={`empty-layer-${i}`} className="p-2"></td>
+        ))}
+      </tr>
+
+      {/* Price */}
+      <tr className="border-b border-gray-200 bg-gray-50">
+        <td className="p-2 font-medium">Price</td>
+        {compareProducts.map((product) => (
+          <td key={`price-${product.id}`} className="p-2 text-center">
+            <p className="text-lg font-bold text-primary">
+              ₹{product.price.toLocaleString()}
+            </p>
+          </td>
+        ))}
+        {Array.from({ length: 4 - compareProducts.length }).map((_, i) => (
+          <td key={`empty-price-${i}`} className="p-2"></td>
+        ))}
+      </tr>
+    </tbody>
+  </table>
+</div>
+
       </div>
     </div>
   );
