@@ -10,13 +10,10 @@ import Products from "@/pages/Products";
 import ProductDetail from "@/pages/ProductDetail";
 import Contact from "@/pages/Contact";
 import Layout from "@/components/Layout";
-import ScrollToTop from "@/components/ScrollToTop";
 
 function Router() {
   return (
     <Layout>
-      {/* ScrollToTop component will handle auto-scrolling to top on navigation */}
-      <ScrollToTop />
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/about" component={About} />

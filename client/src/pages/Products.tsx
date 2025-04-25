@@ -9,8 +9,7 @@ import {
   Grid3X3,
   Grid2X2,
   ArrowUpDown, 
-  Search,
-  Filter
+  Search
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -29,7 +28,6 @@ export default function Products() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("default");
   const [gridView, setGridView] = useState<'compact' | 'regular'>('regular');
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const { toast } = useToast();
 
   // Apply filters to the product list
@@ -153,11 +151,6 @@ export default function Products() {
     setCompareProducts([]);
   };
 
-  // Toggle mobile filter
-  const toggleMobileFilter = () => {
-    setIsMobileFilterOpen(!isMobileFilterOpen);
-  };
-
   return (
     <>
       <Helmet>
@@ -168,38 +161,26 @@ export default function Products() {
       <section className="pt-24 bg-gray-50 min-h-screen">
         <div className="container mx-auto px-4 py-12">
           <div className="text-center mb-8">
-            <h1 className="font-serif text-3xl md:text-4xl font-bold text-[#18346E] mb-2">Our Luxury Mattresses</h1>
+            <h1 className="font-playfair text-3xl md:text-4xl font-bold text-primary">Our Products</h1>
             <p className="mt-4 text-gray-700 max-w-2xl mx-auto">
-              Explore our range of premium export-quality mattresses designed to meet international standards and diverse market needs worldwide.
+              Explore our range of export-quality mattresses designed to meet diverse market needs worldwide.
             </p>
           </div>
 
-          {/* Mobile filter toggle */}
-          <div className="lg:hidden mb-4">
-            <Button 
-              onClick={toggleMobileFilter}
-              variant={isMobileFilterOpen ? "default" : "outline"} 
-              className="w-full flex items-center justify-center"
-            >
-              <Filter className="mr-2 h-4 w-4" />
-              {isMobileFilterOpen ? "Hide Filters" : "Show Filters"}
-            </Button>
-          </div>
-
           {/* Search and sort controls */}
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
+          <div className="flex flex-col md:flex-row gap-4 mb-8">
             <form onSubmit={handleSearch} className="relative flex-1">
               <Input
                 type="text"
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pr-10 border-[#18346E]/30 focus-visible:ring-[#18346E]/20"
+                className="pr-10"
               />
               <Button 
                 type="submit" 
                 variant="ghost" 
-                className="absolute right-0 top-0 h-full px-3 text-[#18346E]"
+                className="absolute right-0 top-0 h-full px-3"
               >
                 <Search className="h-4 w-4" />
               </Button>
@@ -207,9 +188,9 @@ export default function Products() {
             
             <div className="flex gap-2">
               <Select value={sortOption} onValueChange={setSortOption}>
-                <SelectTrigger className="w-48 border-[#18346E]/30">
+                <SelectTrigger className="w-48">
                   <div className="flex items-center">
-                    <ArrowUpDown className="mr-2 h-4 w-4 text-[#18346E]" />
+                    <ArrowUpDown className="mr-2 h-4 w-4" />
                     <SelectValue placeholder="Sort by" />
                   </div>
                 </SelectTrigger>
@@ -224,12 +205,12 @@ export default function Products() {
                 </SelectContent>
               </Select>
               
-              <div className="flex border border-[#18346E]/30 rounded-md overflow-hidden">
+              <div className="flex border rounded-md overflow-hidden">
                 <Button
                   variant={gridView === 'regular' ? 'default' : 'ghost'}
                   size="icon"
                   onClick={() => setGridView('regular')}
-                  className={`rounded-none ${gridView === 'regular' ? 'bg-[#18346E] text-white' : 'text-[#18346E]'}`}
+                  className="rounded-none"
                 >
                   <Grid2X2 className="h-4 w-4" />
                 </Button>
@@ -237,7 +218,7 @@ export default function Products() {
                   variant={gridView === 'compact' ? 'default' : 'ghost'}
                   size="icon"
                   onClick={() => setGridView('compact')}
-                  className={`rounded-none ${gridView === 'compact' ? 'bg-[#18346E] text-white' : 'text-[#18346E]'}`}
+                  className="rounded-none"
                 >
                   <Grid3X3 className="h-4 w-4" />
                 </Button>
@@ -246,8 +227,8 @@ export default function Products() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Sidebar with filters - desktop visible, mobile toggled */}
-            <div className={`${isMobileFilterOpen ? 'block' : 'hidden'} lg:block lg:w-1/4`}>
+            {/* Sidebar with filters */}
+            <div className="lg:w-1/4">
               <ProductFilter products={allProducts} onFilterChange={handleFilterChange} />
             </div>
             
@@ -263,8 +244,8 @@ export default function Products() {
               ) : (
                 <div className={`grid ${
                   gridView === 'regular' 
-                    ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3' 
-                    : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4'
+                    ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3' 
+                    : 'grid-cols-2 sm:grid-cols-3 xl:grid-cols-4'
                 } gap-6`}>
                   {filteredProducts.map(product => (
                     <ProductCard
