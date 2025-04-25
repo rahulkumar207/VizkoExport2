@@ -6,6 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -36,32 +37,33 @@ app.use((req, res, next) => {
   next();
 });
 
+// Routes registration
 (async () => {
   const server = await registerRoutes(app);
 
+  // Error handling middleware
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
+    log(`Error: ${message}`);
+    
     res.status(status).json({ message });
-    throw err;
+    _next(err); // Pass error to next middleware if needed
   });
 
+  // Serve static files in production
   if (process.env.NODE_ENV === "production") {
     serveStatic(app);
   } else {
     await setupVite(app, server);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
+  // Vercel automatically sets the PORT environment variable
+  const port = parseInt(process.env.PORT || "3000", 10);
+
+  // Start serverless function
+  server.listen(port, "0.0.0.0", () => {
+    log(`Server is running on port ${port}`);
   });
 })();
